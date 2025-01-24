@@ -209,6 +209,10 @@ class Graph:
         sum_features = sum_features / counter
         self.full_feats_array = sum_features.cpu().numpy()
         self.full_feats_array: np.ndarray
+        
+        # free memory
+        del sum_features, counter
+        torch.cuda.empty_cache() 
 
         # merging the masks
         if self.cfg.pipeline.merge_type == "hierarchical":

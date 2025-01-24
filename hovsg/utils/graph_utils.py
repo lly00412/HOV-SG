@@ -9,7 +9,6 @@ import faiss
 import matplotlib.pyplot as plt
 import matplotlib.cm as cm
 import numpy as np
-import open3d as o3d
 from scipy.sparse.csgraph import connected_components
 from scipy.spatial import cKDTree, distance
 from sklearn.cluster import DBSCAN, KMeans
@@ -27,7 +26,7 @@ def find_intersection_share(map_points, obj_points, radius=0.05):
 
     Parameters:
     base_points (numpy.ndarray): shape (n1, 3).
-    query_points (numpy.ndarray): shape (n2, 3).
+    map_points (numpy.ndarray): shape (n1, 3).
     radius (float): Radius for KD-Tree query (adjust based on point density).
 
     Returns:
@@ -63,12 +62,11 @@ def compute_room_embeddings(
        embeddings of images in each room, and select 5 representative embeddings to represent the room.
 
     Args:
-        room_masks (List[np.ndarray]): a list of 2D array representing the mask of each room
+        room_pcds (List[o3d.geometry.PointCloud]): a list of 3D point clouds representing each room
         pose_list (List[np.ndarray]): a list of pose of the images
         emb_list (List[np.ndarray]): a list of CLIP embeddings of the images
         pcd_min (np.ndarray): the minimum X, Y, Z of the 3D point cloud of the floor
         pcd_max (np.ndarray): the maximum X, Y, Z of the 3D point cloud of the floor
-        resolution (int): the maximum height of current floor
         num_views (int): the number of views considered in each room
         save_path (Union[str, Path]): a path to save debug info
 
@@ -533,7 +531,7 @@ def merge_3d_masks(mask_list, overlap_threshold=0.5, radius=0.02, iou_thresh=0.0
                 overlap_matrix[i, j] = find_overlapping_ratio_faiss(mask_list[i], mask_list[j], radius=1.5 * radius)
 
     # check if overlap_matrix is zero size
-    if overlap_matrix.shape[0] == 0:
+    if overlap_matrix.size == 0:
         return mask_list
     graph = overlap_matrix > overlap_threshold
     n_components, component_labels = connected_components(graph)
@@ -616,7 +614,7 @@ def seq_merge(frames_pcd, th, down_size, proxy_th):
             radius=down_size,
             iou_thresh=proxy_th,
         )
-        global_masks = mask_list
+        global_masks = merged_mask_list
     
     # apply one more merge
     global_masks = merge_3d_masks(
