@@ -100,7 +100,7 @@ We used the following scenes from the Habitat Matterport 3D Semantics dataset in
 
 1. Our method requires posed input data. Because of that, we recorded trajectories for each sequence we evaluate on. We provide a script (`hovsg/data/hm3dsem/gen_hm3dsem_walks_from_poses.py`) that turns a set of camera poses (`hovsg/data/hm3dsem/metadata/poses`) into a sequence of RGB-D observations using the [habitat-sim](https://github.com/facebookresearch/habitat-sim) simulator. The output includes RGB, depth, poses and frame-wise semantic/panoptic ground truth:
 ```bash
-  python ./hm3dsem/gen_hm3dsem_walks_from_poses.py --dataset_dir /mnt/Data4/hm3dsem --save_dir ./hm3dsem_walks/
+  python ./hovsg/data/hm3dsem/gen_hm3dsem_walks_from_poses.py --dataset_dir /mnt/Data4/hm3dsem --save_dir ./hovsg/data/hm3dsem_walks/
 
 ```
 
