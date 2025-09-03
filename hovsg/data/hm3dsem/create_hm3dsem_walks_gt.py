@@ -18,6 +18,15 @@ from scipy.ndimage import gaussian_filter1d
 
 from hovsg.data.hm3dsem.habitat_utils import make_cfg
 
+def nmvec3tolist(nmvec3) -> list:
+    return [nmvec3.x, nmvec3.y, nmvec3.z]
+
+def nmvec4tolist(nmvec4) -> list:
+    return [nmvec4[0], nmvec4[1], nmvec4[2], nmvec4[3]]
+
+def nmmat4tolist(nmmat4) -> list:
+    return [[nmmat4[i, j] for j in range(4)] for i in range(4)]
+
 
 class PanopticObject:
     def __init__(self, line):
@@ -153,15 +162,15 @@ class PanopticScene:
             obj_id = int(obj.id.split("_")[1])
 
             if obj_id in self.id2obj_idx:
-                self.objects[self.id2obj_idx[obj_id]].aabb_center = obj.aabb.center.tolist()
-                self.objects[self.id2obj_idx[obj_id]].aabb_dims = obj.aabb.sizes.tolist()
-                self.objects[self.id2obj_idx[obj_id]].obb_center = obj.obb.center.tolist()
-                self.objects[self.id2obj_idx[obj_id]].obb_dims = obj.obb.sizes.tolist()
-                self.objects[self.id2obj_idx[obj_id]].obb_rotation = obj.obb.rotation.tolist()
-                self.objects[self.id2obj_idx[obj_id]].obb_local_to_world = obj.obb.local_to_world.tolist()
-                self.objects[self.id2obj_idx[obj_id]].obb_world_to_local = obj.obb.world_to_local.tolist()
+                self.objects[self.id2obj_idx[obj_id]].aabb_center = nmvec3tolist(obj.aabb.center())
+                self.objects[self.id2obj_idx[obj_id]].aabb_dims = nmvec3tolist(obj.aabb.size())
+                self.objects[self.id2obj_idx[obj_id]].obb_center = nmvec3tolist(obj.obb.center)
+                self.objects[self.id2obj_idx[obj_id]].obb_dims = nmvec3tolist(obj.obb.sizes)
+                self.objects[self.id2obj_idx[obj_id]].obb_rotation = nmvec4tolist(obj.obb.rotation)
+                self.objects[self.id2obj_idx[obj_id]].obb_local_to_world = nmmat4tolist(obj.obb.local_to_world)
+                self.objects[self.id2obj_idx[obj_id]].obb_world_to_local = nmmat4tolist(obj.obb.world_to_local)
                 self.objects[self.id2obj_idx[obj_id]].obb_volume = obj.obb.volume
-                self.objects[self.id2obj_idx[obj_id]].obb_half_extents = obj.obb.half_extents.tolist()
+                self.objects[self.id2obj_idx[obj_id]].obb_half_extents = nmvec3tolist(obj.obb.half_extents)
 
     def get_object(self, key):
         if isinstance(key, str):
