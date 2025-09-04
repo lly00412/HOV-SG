@@ -1,7 +1,7 @@
 main:
   device: cuda
   dataset: hm3dsem # scannet, replica
-  scene_id: 00824-Dd4bFSTQ8gi # scene0011_00
+  scene_id: 00890-6s7QHgap2fW # scene0011_00
   split: val
   package_path: /mnt/Data2/liyan/HOV-SG/hovsg/
   dataset_path: /mnt/Data4/hm3dsem_walks/
